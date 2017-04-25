@@ -31,10 +31,14 @@ def filter_fields(extensions, args):
 		fields = args.fields if args.fields else ['name']
 		return [{field: extension[field] for field in fields} for extension in extensions]
 
-def filter_extensions(extensions, version_query):
+def intersects(extension, versions, condition=True):
+	i = not set(extension['shell-version']).isdisjoint(set(versions))
+	return i if condition else not i
+
+def filter_extensions(extensions, version_query, contains=True):
 	try:
 		versions = [v for v in version_query.split(',')]
-		extensions = [extension for extension in extensions if not set(extension['shell-version']).isdisjoint(set(versions))]
+		extensions = [extension for extension in extensions if intersects(extension, versions, contains)]
 	except:
 		print('Invalid version value {}'.format(version_query), file=sys.stderr)
 
@@ -44,6 +48,8 @@ def get_extensions(dirs, args):
 	extensions = read_dirs(dirs)
 	if args.versions:
 		extensions = filter_extensions(extensions, args.versions)
+	if args.not_versions:
+		extensions = filter_extensions(extensions, args.not_versions, False)
 
 	return filter_fields(extensions, args)
 
@@ -58,6 +64,7 @@ def main():
 	parser.add_argument('-a', '--all', dest='all', action='store_true', help='Dump all extension metadata')
 	parser.add_argument('--group', dest='group', action='store_true', help='Group extensions by installation location')
 	parser.add_argument('--versions', dest='versions', action='store', help='Filter by supported gnome-shell versions (comma separated)')
+	parser.add_argument('--not-versions', dest='not_versions', action='store', help='Filter by unsupported gnome-shell versions (comma separated)')
 
 	extension_directories = [
 		'/usr/share/gnome-shell/extensions',

@@ -6,6 +6,7 @@ Simple tool to list the gnome extensions that are currently installed.
 $ ./list-gnome-extensions.py --help
 usage: list-gnome-extensions.py [-h] [-n] [-u] [-d] [-l] [-i] [-v] [-a]
                                 [--group] [--versions VERSIONS]
+                                [--not-versions NOT_VERSIONS]
 
 List currently installed gnome extensions.
 
@@ -22,6 +23,9 @@ optional arguments:
   -a, --all             Dump all extension metadata
   --group               Group extensions by installation location
   --versions VERSIONS   Filter by supported gnome-shell versions (comma
+                        separated)
+  --not-versions NOT_VERSIONS
+                        Filter by unsupported gnome-shell versions (comma
                         separated)
 ```
 
